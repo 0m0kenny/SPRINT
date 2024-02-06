@@ -37,12 +37,13 @@ class MyRequests:
         self.url = f"http://rest.variantvalidator.org/VariantValidator/variantvalidator/{genome_build}/{variant_description}/{select_transcripts}"
         #self.url = '/'.join(['http://rest.variantvalidator.org/variantvalidator', genome_build, variant_description, select_transcripts])
         return self.request_data()
+    
 
 if __name__ == "__main__":
     mrq = MyRequests()
     
     # request the data
-
+#can try to use user input function to ask for species, id, options parameters, genome build, req seq etc
     vr_response = mrq.VariantRecorder('human', 'ENST00000366667:c.803C>T', option=['hgvsg', 'hgvsc', 'hgvsp'])
     vv_response = mrq.VariantValidator('hg38', 'NM_001384479.1:c.803C>T', 'NM_001384479.1')
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     print('\n---------text---------\n', '\n', vv_response.text)
     print('\n--------json---------\n', '\n', vv_response.json())
     print('\n-------end of result--------')
-    vr = vr_response.json()
-    for key in vr.keys():
-     print(key)
+    # vr_dict = vr_response.json()
+    # for key in vr.keys():
+    #  print(key)
     #print(vr_dict['hgvsg'])
