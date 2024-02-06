@@ -1,8 +1,7 @@
 
 # import the requests module
 import requests
-import json
-import pprint #converts json data into nicer readable format
+
 
 # Create the class
 class MyRequests:
@@ -62,5 +61,7 @@ if __name__ == "__main__":
     print('\n---------text---------\n', '\n', vv_response.text)
     print('\n--------json---------\n', '\n', vv_response.json())
     print('\n-------end of result--------')
-    vr_dict = vr_response.json()
-   #print(vr_dict['hgvsg'])
+    vr = vr_response.json()
+    for key in vr.keys():
+     print(key)
+    #print(vr_dict['hgvsg'])
