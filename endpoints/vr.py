@@ -11,8 +11,6 @@ api = Api(app = application)
 
 parser_vr = request_parser.parser_vr_fields
 vr_choices = request_parser.parser_vr_choices
-parser_vv = request_parser.parser_vv_content
-
 
 
 vr_space = api.namespace('Variant Decoder', description='Translates a variant identifier, HGVS notation or genomic SPDI notation to all possible variant IDs, HGVS and genomic SPDI')
@@ -29,12 +27,11 @@ vr_space = api.namespace('Variant Decoder', description='Translates a variant id
 #            ">  Can be Variant ID, HGVS notation or genomic SPDI notation\n")
 class VariantRecorderClass(Resource):
     @api.doc(parser=parser_vr)
-    @api.expect(parser_vr, parser_vv)     
+    @api.expect(parser_vr)     
     def get(self, species, id):
         '''Translate a variant identifier, HGVS notation or genomic SPDI notation to all possible variant IDs, HGVS and genomic SPDI'''
         vr_args = parser_vr.parse_args()
-        vv_args = parser_vv.parse_args()
-
+    
         options = vr_args.get('fields', '')
 
         url = f"https://rest.ensembl.org/variant_recoder/{species}/{id}"
