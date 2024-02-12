@@ -1,18 +1,44 @@
-from flask import Flask, make_response
-from flask_restx import Api, Resource, reqparse, Namespace
+from flask import make_response
+from flask_restx import Resource, reqparse, Namespace
 import requests
 from utils import request_parser
 
 
-application = Flask(__name__)
-api = Api(app = application)
-
-parser_vv = request_parser.parser_vv_content
 
 
-vv_space = api.namespace('Variant Validator', description=  '''Validates syntax and parameters of variant descriptions according to HGVS''')
+parser_vv = request_parser.parser_vv
 
-@vv_space.route("/variantvalidator/<string:genome_build>/<string:variant_description>/<string:select_transcripts>")
+api = Namespace('Variant Validator', description=  '''Validates syntax and parameters of variant descriptions according to HGVS''')
+
+@api.route("/variantvalidator/<string:genome_build>/<string:variant_description>/<string:select_transcripts>")
+@api.param("select_transcripts", "***'all'***\n"
+                                 ">   Return all possible transcripts\n"
+                                 "\n***Single***\n"
+                                 ">   NM_000093.4\n"
+                                 "\n***Multiple***\n"
+                                 ">   NM_000093.4|NM_001278074.1|NM_000093.3")
+@api.param("variant_description", "***HGVS***\n"
+                                  ">   NM_000088.3:c.589G>T\n"
+                                  ">   NC_000017.10:g.48275363C>A\n"
+                                  ">   NG_007400.1:g.8638G>T\n"
+                                  ">   LRG_1:g.8638G>T\n"
+                                  ">   LRG_1t1:c.589G>T\n"
+                                  "\n***Pseudo-VCF***\n"
+                                  ">   17-50198002-C-A\n"
+                                  ">   17:50198002:C:A\n"
+                                  ">   GRCh38-17-50198002-C-A\n"
+                                  ">   GRCh38:17:50198002:C:A\n"
+                                  "\n***Hybrid***\n"
+                                  ">   chr17:50198002C>A\n "
+                                  ">   chr17:50198002C>A(GRCh38)\n"
+                                  ">   chr17:g.50198002C>A\n"
+                                  ">   chr17:g.50198002C>A(GRCh38)")
+@api.param("genome_build", "***Accepted:***\n"
+                           ">   GRCh37\n"
+                           ">   GRCh38\n"
+                           ">   hg19\n"
+                           ">   hg38")
+
 class VariantValidatorClass(Resource):
     @api.doc(parser=parser_vv)
     @api.expect(parser_vv)     
@@ -37,13 +63,13 @@ class VariantValidatorClass(Resource):
         validation = requests.get(url, headers={ "Content-Type" : content_type})
               
         if content_type == 'application/json':
-                    content = validation.json()
-        elif content_type == 'text/xml'or 'text/javascript':
-                content = validation.content
-                return make_response(content, 200, {'Content-Type': content_type})
+                        #contents = 'application/json'
+            content = validation.json()
+        elif content_type in ['text/xml', 'text/javascript']:
+            content = validation.content
+            return make_response(content, 200, {'Content-Type': content_type})
         else:
-            return {"note": "No Content-Type selected, so data returned as default application/json"}, 200
-        
+            content = validation.text
         return content
 
 
