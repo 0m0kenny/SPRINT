@@ -26,6 +26,7 @@ class VariantEPredictorClass(Resource):
         vep_args = parser_vep.parse_args()
         dbNSFP_choices = vep_args.get('dbNSFP', '')
         content_type = vep_args.get('Content-type', '')
+        content_input = 'application/json' or content_type  
 
         url = f"https://rest.ensembl.org/vep/{species}/hgvs/{hgvs_notation}"
                 
@@ -40,16 +41,15 @@ class VariantEPredictorClass(Resource):
             
             url += f"?dbNSFP={options_param}"
           
-        validation = requests.get(url, headers={ "Content-Type" : content_type})
+        validation = requests.get(url, headers={ "Content-Type" : content_input})
             
             
                   
-        if content_type == 'application/json':
-                        #contents = 'application/json'
-            content = validation.json()
-        elif content_type in ['text/xml', 'text/javascript']:
-            content = validation.content
-            return make_response(content, 200, {'Content-Type': content_type})
-        else:
-            content = validation.text
+             
+        if content_input == 'application/json':
+                    content = validation.json()
+        elif content_input == 'text/xml'or content_input == 'text/javascript':
+                content = validation.content
+                return make_response(content, 200, {'Content-Type': content_input})
+                
         return content

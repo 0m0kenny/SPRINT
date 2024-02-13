@@ -46,30 +46,20 @@ class VariantValidatorClass(Resource):
         '''Validates syntax and parameters of variant descriptions according to HGVS'''
         vv_args = parser_vv.parse_args()
         content_type = vv_args.get('content-type', '')
+        content_input = 'application/json' or content_type
     
         url = f"http://rest.variantvalidator.org/VariantValidator/variantvalidator/{genome_build}/{variant_description}/{select_transcripts}"
         
-        # validation = requests.get(url)
-        # content= validation.json()
-
-        # if vv_args['content-type'] == 'application/json':
-        #     return vv_representations.application_json(content, 200, None)
-                    
-        # elif vv_args['content-type'] == 'text/xml':
-        #     return vv_representations.xml(content, 200, None)
-        # else:
-        #     return content
-        
-        validation = requests.get(url, headers={ "Content-Type" : content_type})
+       
+        validation = requests.get(url, headers={ "Content-Type" : content_input})
               
-        if content_type == 'application/json':
-                        #contents = 'application/json'
-            content = validation.json()
-        elif content_type in ['text/xml', 'text/javascript']:
-            content = validation.content
-            return make_response(content, 200, {'Content-Type': content_type})
-        else:
-            content = validation.text
+              
+        if content_input == 'application/json':
+                    content = validation.json()
+        elif content_input == 'text/xml'or content_input == 'text/javascript':
+                content = validation.content
+                return make_response(content, 200, {'Content-Type': content_input})
+                
         return content
 
 
