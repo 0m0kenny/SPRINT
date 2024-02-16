@@ -12,6 +12,9 @@ allele_choices = request_parser.allele_choices
 
 api = Namespace('Variant Recoder', description='Translates a variant identifier, HGVS notation or genomic SPDI notation to all possible variant IDs, HGVS and genomic SPDI')
 
+
+      
+
 @api.route("/variant_recoder/<string:species>/<string:id>")
 @api.param("species", "Enter Species name/alias\n"
            ">   e.g human, homo sapiens\n")
@@ -41,46 +44,31 @@ class VariantRecorderClass(Resource):
             url += f"?fields={options_param}"
         
         validation = requests.get(url, headers={ "Content-Type" : content_input})
-        
-        content = validation.json()
-             
-        @api.representation('text/xml')
-        def text_xml(data, code, headers):
-                resp = make_response(dicttoxml(data), code)
-                resp.headers.extend(headers)
-                return resp
-        @api.representation('application/json')
-        def application_json(data, code, headers):
-                resp = make_response((data), code)
-                resp.headers.extend(headers)
-                return resp 
-     
-
-        # Overrides the default response route so that the standard HTML URL can return any specified format
-        if vr_args['Content-type'] == 'application/json':
-            if vr_allele:
-                response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
-            
-                return application_json(response, 200, headers={ "Content-Type" : content_input} )
-            else:
-                return application_json(content, 200, headers={ "Content-Type" : content_input} )
-        
-        elif vr_args['Content-type'] == 'text/xml':
-            if vr_allele:
-                response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
-                return text_xml(response, 200, headers={ "Content-Type" : 'text/xml'} )
-            else:
-                return text_xml(content, 200, headers={ "Content-Type" : 'text/xml'} )
-        else:
-            if vr_allele:
-                response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
-                text_response = str(response)
-                return make_response(text_response, 200)
-            else:   
-             content = validation.text
-             return make_response(content, 200)      
-        
-
        
+        content = validation.json()
+            # Overrides the default response route so that the standard HTML URL can return any specified format
+        if vr_args['Content-type'] == 'application/json':
+                if vr_allele:
+                    response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
+                
+                    return helper_functions.application_json(response, 200, headers={ "Content-Type" : content_input} )
+                else:
+                    return helper_functions.application_json(content, 200, headers={ "Content-Type" : content_input} )
+            
+        elif vr_args['Content-type'] == 'text/xml':
+                if vr_allele:
+                    response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
+                    return helper_functions.text_xml(response, 200, headers={ "Content-Type" : 'text/xml'} )
+                else:
+                    return helper_functions.text_xml(content, 200, headers={ "Content-Type" : 'text/xml'} )
+        else:
+                if vr_allele:
+                    response = helper_functions.get_allele_filter(vr_allele, allele_choices, content)
+                    text_response = str(response)
+                    return make_response(text_response, 200)
+                else:   
+                    content = validation.text
+                    return make_response(content, 200)      
+        
 
 

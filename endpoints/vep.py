@@ -2,7 +2,7 @@
 from flask_restx import Namespace, Resource
 from flask import make_response
 import requests
-from utils import request_parser
+from utils import request_parser, helper_functions
 
 
 parser_vep = request_parser.parser_vep
@@ -17,7 +17,7 @@ api = Namespace('Variant Effect Predictor', description='Determines the effect o
            ">   e.g human, homo sapiens\n")
            
 @api.param("hgvs_notation", "Enter hgvs_notation \n"
-           ">   e.g ENST00000366667:c.803C>Ts\n")
+           ">   e.g ENST00000366667:c.803C>T\n")
 class VariantEPredictorClass(Resource): 
     @api.doc(parser=parser_vep)
     @api.expect(parser_vep, validate=True)  
@@ -42,14 +42,16 @@ class VariantEPredictorClass(Resource):
             url += f"?dbNSFP={options_param}"
           
         validation = requests.get(url, headers={ "Content-Type" : content_input})
-            
-            
-                  
+          
+        content = validation.json()
+        if vep_args['Content-type'] == 'application/json':
+                return helper_functions.application_json(content, 200, headers={ "Content-Type" : content_input} )
+                           
+        elif vep_args['Content-type'] == 'text/xml':
+                return helper_functions.text_xml(content, 200, headers={ "Content-Type" : 'text/xml'} )
+        else:   
+                content = validation.text
+                return make_response(content, 200)        
+          
              
-        if content_input == 'application/json':
-                    content = validation.json()
-        elif content_input == 'text/xml'or content_input == 'text/javascript':
-                content = validation.content
-                return make_response(content, 200, {'Content-Type': content_input})
-                
-        return content
+      
