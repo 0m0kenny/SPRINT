@@ -1,7 +1,7 @@
 from flask import make_response
 from flask_restx import Resource, reqparse, Namespace
 import requests
-from utils import request_parser
+from utils import request_parser, helper_functions
 
 
 
@@ -50,16 +50,17 @@ class VariantValidatorClass(Resource):
     
         url = f"http://rest.variantvalidator.org/VariantValidator/variantvalidator/{genome_build}/{variant_description}/{select_transcripts}"
         
-       
         validation = requests.get(url, headers={ "Content-Type" : content_input})
-              
-              
-        if content_input == 'application/json':
-                    content = validation.json()
-        elif content_input == 'text/xml'or content_input == 'text/javascript':
-                content = validation.content
-                return make_response(content, 200, {'Content-Type': content_input})
-                
-        return content
+         
+        content = validation.json()
+        if vv_args['content-type'] == 'application/json':
+                return helper_functions.application_json(content, 200, headers={ "content-Type" : content_input} )
+                           
+        elif vv_args['content-type'] == 'text/xml':
+                return helper_functions.text_xml(content, 200, headers={ "content-Type" : 'text/xml'} )
+        else:   
+                content = validation.text
+                return make_response(content, 200)        
+        
 
 
