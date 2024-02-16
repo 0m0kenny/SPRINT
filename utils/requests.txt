@@ -1,0 +1,12 @@
+
+    VariantRecorder('human', 'ENST00000366667:c.803C>T', option=['hgvsg', 'hgvsc', 'hgvsp', 'id', 'spdi'])
+    VariantValidator('hg38', 'NM_001384479.1:c.803C>T', 'NM_001384479.1')
+    VariantEPredictor('human', 'ENST00000366667:c.803C>T')
+
+vr eg url 
+https://rest.ensembl.org/variant_recoder/human/ENST00000366667:c.803C%3ET/?fields=hgvsg%2Chgvsc%2Chgvsp%2Cid%2Cspdi
+
+vv eg url 
+https://rest.variantvalidator.org/VariantValidator/variantvalidator/hg38/NM_001384479.1:c.803C%3eT/NM_001384479.1
+vep eg url
+    https://rest.ensembl.org/vep/human/hgvs/ENST00000366667:c.803C%3ET/?refseq=True&dbscSNV=True&variant_class=True&Conservation=True&ccds=True&dbNSFP=REVEL_score

@@ -1,7 +1,7 @@
 
 # import the requests module
 import requests
-
+import json
 
 # Create the class
 class MyRequests:
@@ -65,28 +65,55 @@ if __name__ == "__main__":
 
     #print the 3 response sections
     print('-\n--------------------------VARIANT RECODER RESULTS-------------------\n')
-    print('\n---------status code-------------\n',  '\n', vr_response.status_code)
-    print('\n----------headers-------------\n','\n', vr_response.headers)
-    print('\n---------text---------------\n','\n', vr_response.text)
-    print('\n-----------json----------\n', '\n', vr_response.json()) #parse json object into dict
+    # print('\n---------status code-------------\n',  '\n', vr_response.status_code)
+    # print('\n----------headers-------------\n','\n', vr_response.headers)
+    # print('\n---------text---------------\n','\n', vr_response.text)
+    # print('\n-----------json----------\n', '\n', vr_response.json()) #parse json object into dict
+    content = vr_response.json()
+    print(type(content))
+    print(content)
+    print(len(content))
+    # content_str = json.dumps(content)
+    # print(type(content_str))
+    # print(content_str)
+    # content_dict = json.loads(content_str)
+    # print(type(content_dict))
+    # print(content_dict)
+    # print(content[0]['T']['hgvsp'])
+
+    def get_allele(self, allele):
+        self.allele = allele
+        allele =  user_input 
+        user_input = input("Enter 'T' or 'A': ")
+        for item in content:
+            if allele in item:
+                selected_dict = item[allele]
+                print(selected_dict)
+                break
+        else:
+            print("Invalid input. Please enter 'T' or 'A'.")
+
+    print(vr_response.url)
+    print('\n-------end of result--------')
     
-    print('\n-------end of result--------')
-    #print(vr_response.json())
-    print('\n--------------------------VARIANT VALIDATOR RESULTS---------------\n')
-    print('\n---------status code-------\n','\n', vv_response.status_code)
-    print('\n-------headers--------\n', '\n', vv_response.headers)
-    print('\n---------text---------\n', '\n', vv_response.text)
-    print('\n--------json---------\n', '\n', vv_response.json())
-    print('\n-------end of result--------')
-    # vr_dict = vr_response.json()
-    # for key in vr.keys():
-    #  print(key)
-    #print(vr_dict['hgvsg'])
-    #decoded = vr.response.json()
-    #print(repr(decoded))
-    print('\n--------------------------VARIANT E PREDICTOR RESULTS---------------\n')
-    print('\n---------status code-------\n','\n', vep_response.status_code)
-    print('\n-------headers--------\n', '\n', vep_response.headers)
-    print('\n---------text---------\n', '\n', vep_response.text)
-    print('\n--------json---------\n', '\n', vep_response.json())
-    print('\n-------end of result--------')
+    
+    # #print(vr_response.json())
+    # print('\n--------------------------VARIANT VALIDATOR RESULTS---------------\n')
+    # print('\n---------status code-------\n','\n', vv_response.status_code)
+    # print('\n-------headers--------\n', '\n', vv_response.headers)
+    # print('\n---------text---------\n', '\n', vv_response.text)
+    # print('\n--------json---------\n', '\n', vv_response.json())
+    
+    # print(vv_response.url)
+    # print('\n-------end of result--------')
+ 
+    # print('\n--------------------------VARIANT E PREDICTOR RESULTS---------------\n')
+    # print('\n---------status code-------\n','\n', vep_response.status_code)
+    # print('\n-------headers--------\n', '\n', vep_response.headers)
+    # print('\n---------text---------\n', '\n', vep_response.text)
+    # print('\n--------json---------\n', '\n', vep_response.json())
+    # print('\n-------end of result--------')
+    # print(vep_response.url)
+
+
+#https://rest.ensembl.org/vep/human/hgvs/ENST00000366667:c.803C%3ET/?refseq=True&dbscSNV=True&variant_class=True&Conservation=True&ccds=True&dbNSFP=REVEL_score
